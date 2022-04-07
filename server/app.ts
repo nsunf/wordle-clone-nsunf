@@ -17,12 +17,12 @@ app.use(express.static(path.join(__dirname, '..', '..', 'client', 'build')));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }))
 app.use(cookieParser());
-app.use(session({
-  secret: process.env.SESSION_SECRET || 'sECreT kEY',
-  resave: false,
-  saveUninitialized: true,
-  store: new FileStore()
-}))
+// app.use(session({
+//   secret: process.env.SESSION_SECRET || 'sECreT kEY',
+//   resave: false,
+//   saveUninitialized: true,
+//   store: new FileStore()
+// }))
 
 app.use('/', indexRouter);
 app.use('/api', apiRouter);

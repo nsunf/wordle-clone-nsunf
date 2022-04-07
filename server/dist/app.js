@@ -18,12 +18,12 @@ app.use(express_1.default.static(path_1.default.join(__dirname, '..', '..', 'cli
 app.use(express_1.default.json());
 app.use(express_1.default.urlencoded({ extended: true }));
 app.use((0, cookie_parser_1.default)());
-app.use((0, express_session_1.default)({
-    secret: process.env.SESSION_SECRET || 'sECreT kEY',
-    resave: false,
-    saveUninitialized: true,
-    store: new FileStore()
-}));
+// app.use(session({
+//   secret: process.env.SESSION_SECRET || 'sECreT kEY',
+//   resave: false,
+//   saveUninitialized: true,
+//   store: new FileStore()
+// }))
 app.use('/', index_1.default);
 app.use('/api', api_1.default);
 app.listen(app.get('port'), () => {
