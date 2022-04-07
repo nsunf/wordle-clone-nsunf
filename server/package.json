@@ -5,9 +5,10 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start:prebuild": "tsc -w",
-    "start:nodemon": "nodemon --watch . dist/app.js",
-    "start": "concurrently npm:start:*"
+    "dev-start:prebuild": "tsc -w",
+    "dev-start:nodemon": "nodemon --watch . dist/app.js",
+    "dev-start": "concurrently npm:dev-start:*",
+    "start": "tsc && pm2 start dist/app.js"
   },
   "keywords": [],
   "author": "",
