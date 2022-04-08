@@ -1,7 +1,8 @@
-import React, { useEffect, useRef } from "react";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 
-const TileBlock = styled.div<{isFocused: boolean}>`
+import { ITile, TileState } from "../models/Tile";
+
+const TileBlock = styled.div<{isFocused: boolean, state: TileState}>`
   width: 100px;
   height: 100px;
 
@@ -27,24 +28,37 @@ const TileBlock = styled.div<{isFocused: boolean}>`
       transform: scale(1.025);
     ` : null
   }
+
+  ${props => {
+      switch (props.state) {
+        case 'right':
+          return css`
+            color: white;
+            background: ${props.theme.main_color};
+          `;
+        case 'wrong position':
+          return css`
+            color: white;
+            background: ${props.theme.yellow};
+          `;
+        case 'wrong':
+          return css`
+            color: white;
+            background: ${props.theme.sub_color};
+          `;
+        default :
+          return;
+      }
+    }
+  }
 `;
 
-interface TileProps {
-  char: string;
-  isFocused: boolean;
-}
 
-function Tile({ char, isFocused }: TileProps) {
-  const inputRef = useRef<HTMLInputElement>(null);
-
-  useEffect(() => {
-    if (isFocused) {
-      inputRef.current?.focus();
-    }
-  });
+function Tile({ tile, isFocused }: { tile: ITile, isFocused: boolean }) {
+  const { char, state } = tile;
 
   return (
-    <TileBlock isFocused={isFocused}>
+    <TileBlock isFocused={isFocused} state={state}>
       {char}
     </TileBlock>
   );

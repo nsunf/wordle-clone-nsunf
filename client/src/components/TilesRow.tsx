@@ -1,7 +1,7 @@
-import React from "react";
-
 import styled from "styled-components";
 import Tile from "./Tile";
+
+import { ITile } from "../models/Tile";
 
 const TilesRowBlock = styled.div`
   display: flex;
@@ -11,17 +11,17 @@ const TilesRowBlock = styled.div`
 `;
 
 interface TilesRowProps {
-  row: string[];
+  row: ITile[];
   cursor: number|null;
 }
 
 function TilesRow({ row, cursor }: TilesRowProps) {
   return (
     <TilesRowBlock>
-      {row.map((char, i) => 
+      {row.map((tile, i) => 
         <Tile key={`tile_${i}`} 
-        char={char} 
-        isFocused={i === cursor}
+        tile={tile}
+        isFocused={cursor === i}
         />
       )}
     </TilesRowBlock>

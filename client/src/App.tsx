@@ -1,7 +1,10 @@
+import { useEffect } from 'react';
 import styled, { ThemeProvider } from 'styled-components';
 
 import Header from './components/Header';
 import Body from './components/Body';
+
+import axios from 'axios';
 
 const theme = {
   background_color: '#E7DFE8',
@@ -16,6 +19,11 @@ const AppBlock = styled.div`
 `;
 
 function App() {
+  useEffect(() => {
+    axios.get('/').then((response) => {
+      console.log('axios root server')
+    })
+  }, []);
   return (
     <ThemeProvider theme={theme}>
     <AppBlock>

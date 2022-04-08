@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { FiSettings } from "react-icons/fi";
-import { MdLeaderboard, MdOutlineLeaderboard } from "react-icons/md";
+import { MdLeaderboard } from "react-icons/md";
 import { Link } from "react-router-dom";
 
 const HeaderBlock = styled.div`
