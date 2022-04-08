@@ -28,10 +28,13 @@ function TilesMatrixContainer() {
   }, [cursor]);
 
   const moveRow = useCallback(() => {
-    if (cursor.row === 4) return;
-    if (cursor.idx !== 4) return;
+    if (
+      cursor.row === 4 ||
+      cursor.idx !== 4 ||
+      rows[cursor.row][cursor.idx] === ''
+      ) return;
     setCursor({row: cursor.row + 1, idx: 0});
-  }, [cursor]);
+  }, [cursor, rows]);
   
   const addChar = useCallback((char: string) => {
     if (rows[cursor.row][cursor.idx] !== '') return;
