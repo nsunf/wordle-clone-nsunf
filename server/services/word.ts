@@ -19,6 +19,8 @@ interface TwinwordRes {
   result_msg: string;
 }
 
+type TileState = 'right'|'wrong position'|'wrong'|'normal';
+
 
 class WordManager {
   data: string[] = [];
@@ -62,6 +64,20 @@ class WordManager {
     let randomWord = this.data[randomNum];
 
     return randomWord;
+  }
+
+  checkAnswer(submit: string, answer: string): TileState[] {
+    let result: TileState[] = Array(5).fill('normal');
+    for (let i = 0; i < 5; i++) {
+      if (submit[i] === answer[i]) {
+        result[i] = 'right';
+      } else if (answer.includes(submit[i])) {
+        result[i] = 'wrong position';
+      } else {
+        result[i] = 'wrong';
+      }
+    }
+    return result;
   }
 }
 

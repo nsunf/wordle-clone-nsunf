@@ -59,5 +59,20 @@ class WordManager {
         let randomWord = this.data[randomNum];
         return randomWord;
     }
+    checkAnswer(submit, answer) {
+        let result = Array(5).fill('normal');
+        for (let i = 0; i < 5; i++) {
+            if (submit[i] === answer[i]) {
+                result[i] = 'right';
+            }
+            else if (answer.includes(submit[i])) {
+                result[i] = 'wrong position';
+            }
+            else {
+                result[i] = 'wrong';
+            }
+        }
+        return result;
+    }
 }
 exports.default = new WordManager();

@@ -13,19 +13,27 @@ const app = express();
 
 app.set('port', process.env.PORT);
 
-app.use(express.static(path.join(__dirname, '..', '..', 'client', 'build')));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }))
 app.use(cookieParser());
-// app.use(session({
-//   secret: process.env.SESSION_SECRET || 'sECreT kEY',
-//   resave: false,
-//   saveUninitialized: true,
-//   store: new FileStore()
-// }))
+app.use(session({
+  secret: process.env.SESSION_SECRET || 'sECreT kEY',
+  resave: false,
+  saveUninitialized: true,
+  store: new FileStore()
+}))
 
 app.use('/', indexRouter);
 app.use('/api', apiRouter);
+app.use(express.static(path.join(__dirname, '..', '..', 'client', 'build')));
+
+
+declare module 'express-session' {
+  interface SessionData {
+    word: string;
+    score: null
+  }
+}
 
 app.listen(app.get('port'), () => {
   console.log('Express server is running on ' + app.get('port'));
