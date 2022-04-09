@@ -18,6 +18,15 @@ router.post('/submit', (req: Request, res: Response) => {
     })
 });
 
+router.post('/newGame', (req: Request, res: Response) => {
+  req.session.word = wordManager.randomWord();
+  res.end();
+});
+
+router.post('/answer', (req: Request, res: Response) => {
+  res.send(req.session.word);
+});
+
 
 export default router;
 

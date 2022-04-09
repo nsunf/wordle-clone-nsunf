@@ -7,8 +7,9 @@ const express_1 = __importDefault(require("express"));
 const word_1 = __importDefault(require("../services/word"));
 const router = express_1.default.Router();
 router.post('/submit', (req, res) => {
+    var _a;
     let word = req.body.word;
-    let answer = req.session.word;
+    let answer = (_a = req.session.word) !== null && _a !== void 0 ? _a : 'hello';
     word_1.default.isItAWord(word)
         .then(isWord => {
         if (isWord) {
@@ -20,5 +21,12 @@ router.post('/submit', (req, res) => {
             res.send({ status: 'failure', tiles: null });
         }
     });
+});
+router.post('/newGame', (req, res) => {
+    req.session.word = word_1.default.randomWord();
+    res.end();
+});
+router.post('/answer', (req, res) => {
+    res.send(req.session.word);
 });
 exports.default = router;

@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import axios from "axios";
+import _ from "lodash";
 
 import TilesMatrixPresenter from "../presenters/TilesMatrixPresenter";
 import TilesRow from "../components/TilesRow";
@@ -12,6 +13,7 @@ const initialRows: ITile[][] = [
   [{ char: '', state: 'normal' }, { char: '', state: 'normal' }, { char: '', state: 'normal' }, { char: '', state: 'normal' }, { char: '', state: 'normal' }],
   [{ char: '', state: 'normal' }, { char: '', state: 'normal' }, { char: '', state: 'normal' }, { char: '', state: 'normal' }, { char: '', state: 'normal' }],
   [{ char: '', state: 'normal' }, { char: '', state: 'normal' }, { char: '', state: 'normal' }, { char: '', state: 'normal' }, { char: '', state: 'normal' }],
+  [{ char: '', state: 'normal' }, { char: '', state: 'normal' }, { char: '', state: 'normal' }, { char: '', state: 'normal' }, { char: '', state: 'normal' }],
   [{ char: '', state: 'normal' }, { char: '', state: 'normal' }, { char: '', state: 'normal' }, { char: '', state: 'normal' }, { char: '', state: 'normal' }]
 ];
 
@@ -19,6 +21,7 @@ function TilesMatrixContainer() {
   const [cursor, setCursor] = useState<{row: number, idx: number}>({row: 0, idx: 0});
   const [rows, setRows] = useState<ITile[][]>(initialRows);
   const [loading, setLoading] = useState(false);
+  const [willRestart, setWillRestart] = useState(false);
   
   const moveIdx = useCallback((forwards: boolean) => {
     let nxtIdx = cursor.idx;
@@ -33,7 +36,7 @@ function TilesMatrixContainer() {
 
   const moveRow = useCallback(() => {
     if (
-      cursor.row === 4 ||
+      cursor.row === 5 ||
       cursor.idx !== 4 ||
       rows[cursor.row][cursor.idx].char === ''
       ) return;
@@ -42,14 +45,14 @@ function TilesMatrixContainer() {
   
   const addChar = useCallback((char: string) => {
     if (rows[cursor.row][cursor.idx].char !== '') return;
-    let tmp = [...rows];
+    let tmp = _.cloneDeep(rows);
     tmp[cursor.row][cursor.idx].char = char;
-    setRows(tmp);
+    setRows([...tmp]);
     moveIdx(true);
   }, [cursor, rows, moveIdx]);
 
   const removeChar = useCallback(() => {
-    let tmp = rows;
+    let tmp = _.cloneDeep(rows);
 
     if (rows[cursor.row][cursor.idx].char === '') {
       moveIdx(false);
@@ -71,9 +74,9 @@ function TilesMatrixContainer() {
         setLoading(false);
         if (result.data.status === 'succeed') {
           let tileStates = result.data.tiles;
-          let tmp = [...rows];
+          let tmp = _.cloneDeep(rows);
           tmp[cursor.row].map((tile, i) => tile.state = tileStates[i]);
-          setRows(tmp);
+          setRows([...tmp]);
           moveRow();
         } else {
           alert(`'${word}' is not a word`);
@@ -81,6 +84,12 @@ function TilesMatrixContainer() {
         }
       })
   }, [cursor, rows, moveRow]);
+
+  const reset = () => {
+    setCursor({ row: 0, idx: 0 });
+    setRows(initialRows);
+    setWillRestart(false);
+  };
 
 
   const keyPressEvent = useCallback((e: KeyboardEvent) => {
@@ -112,10 +121,30 @@ function TilesMatrixContainer() {
     return () => clearTimeout(timer);
   }, [loading, cursor])
 
+  useEffect(() => {
+    let tilesRow = rows[cursor.row]
+    if (tilesRow.every(tile => tile.state === 'right')) {
+      alert('Right');
+      axios.post('/api/newGame').then(() => setWillRestart(true));
+    } else if (cursor.row === 5 && tilesRow.every(tile => tile.state !== 'normal')) {
+      console.log('hahaha')
+      axios.post('api/answer').then((response) => {
+        let answer = response.data;
+        alert(`the answer is ${answer}`);
+      }).then(() => {
+        axios.post('/api/newGame').then(() => setWillRestart(true));
+      })
+    }
+  }, [cursor, rows]);
+
+  useEffect(() => {
+    if (!willRestart) return; 
+    reset();
+  }, [willRestart]);
 
   return (
     <TilesMatrixPresenter>
-      <div>
+      <div onClick={() => {console.log(initialRows)}}>
       {rows.map((row, i) => 
         <TilesRow 
         key={`row_${i}`} 
