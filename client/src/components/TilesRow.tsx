@@ -19,7 +19,8 @@ function TilesRow({ row, cursor }: TilesRowProps) {
   return (
     <TilesRowBlock>
       {row.map((tile, i) => 
-        <Tile key={`tile_${i}`} 
+        <Tile 
+        key={`tile_${i}`} 
         tile={tile}
         isFocused={cursor === i}
         />

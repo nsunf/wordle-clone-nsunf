@@ -7,6 +7,7 @@ import TilesRow from "../components/TilesRow";
 import SubmitButton from "../styled/SubmitButton";
 
 import { ITile } from "../models/Tile";
+import KeyboardContainer from "./KeyboardContainer";
 
 const initialRows: ITile[][] = [
   [{ char: '', state: 'normal' }, { char: '', state: 'normal' }, { char: '', state: 'normal' }, { char: '', state: 'normal' }, { char: '', state: 'normal' }],
@@ -91,6 +92,11 @@ function TilesMatrixContainer() {
     setWillRestart(false);
   };
 
+  const setKeyboardHandler = useCallback(() => {
+    let row = rows[cursor.row];
+
+  }, [cursor, rows]);
+
 
   const keyPressEvent = useCallback((e: KeyboardEvent) => {
     if (loading) return;
@@ -154,6 +160,7 @@ function TilesMatrixContainer() {
       }
       </div>
       <SubmitButton onClick={submitRow}>Submit</SubmitButton>
+      <KeyboardContainer rows={rows}/>
     </TilesMatrixPresenter>
   );
 }
