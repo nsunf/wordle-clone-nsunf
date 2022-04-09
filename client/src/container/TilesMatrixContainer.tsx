@@ -92,12 +92,6 @@ function TilesMatrixContainer() {
     setWillRestart(false);
   };
 
-  const setKeyboardHandler = useCallback(() => {
-    let row = rows[cursor.row];
-
-  }, [cursor, rows]);
-
-
   const keyPressEvent = useCallback((e: KeyboardEvent) => {
     if (loading) return;
     let key = e.code;
@@ -160,7 +154,7 @@ function TilesMatrixContainer() {
       }
       </div>
       <SubmitButton onClick={submitRow}>Submit</SubmitButton>
-      <KeyboardContainer rows={rows}/>
+      <KeyboardContainer rows={rows} addChar={addChar} removeChar={removeChar}/>
     </TilesMatrixPresenter>
   );
 }

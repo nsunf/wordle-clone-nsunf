@@ -1,9 +1,15 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import _ from "lodash";
 
 import KeyboardPresenter from "../presenters/KeyboardPresenter";
 import { KeysRow, Key } from "../styled/Key";
 import { ITile } from "../models/Tile";
+
+interface KeyboardContainerProps {
+  rows: ITile[][];
+  addChar: (char: string) => void;
+  removeChar: () => void;
+}
 
 const initialKeys: ITile[][]= [
   [{char: 'Q', state: 'normal'}, {char: 'W', state: 'normal'}, {char: 'E', state: 'normal'}, {char: 'R', state: 'normal'}, {char: 'T', state: 'normal'}, {char: 'Y', state: 'normal'}, {char: 'U', state: 'normal'}, {char: 'I', state: 'normal'}, {char: 'O', state: 'normal'}, {char: 'P', state: 'normal'}],
@@ -11,7 +17,7 @@ const initialKeys: ITile[][]= [
   [{char: 'Z', state: 'normal'}, {char: 'X', state: 'normal'}, {char: 'C', state: 'normal'}, {char: 'V', state: 'normal'}, {char: 'B', state: 'normal'}, {char: 'N', state: 'normal'}, {char: 'M', state: 'normal'}]
 ]
 
-function KeyboardContainer({ rows }: { rows: ITile[][] }) {
+function KeyboardContainer({ rows, addChar, removeChar }: KeyboardContainerProps) {
   const [keys, setKeys] = useState(initialKeys);
 
   useEffect(() => {
@@ -47,8 +53,8 @@ function KeyboardContainer({ rows }: { rows: ITile[][] }) {
       {keys.map((row, i) => {
         return (
           <KeysRow key={`keysRow_${i}`}>
-            {row.map(key => <Key key={`key_${key.char}`} keyValue={key.char} isBackspace={false} state={key.state}></Key>)}
-            {i === 2 ? <Key keyValue={'←'} isBackspace={true} state={Key.state}/> : null}
+            {row.map(key => <Key key={`key_${key.char}`} keyValue={key.char} isBackspace={false} state={key.state} onClick={() => addChar(key.char)}></Key>)}
+            {i === 2 ? <Key keyValue={'←'} isBackspace={true} state={Key.state} onClick={() => removeChar()}/> : null}
           </KeysRow>
         );
       })}
