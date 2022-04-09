@@ -48,46 +48,44 @@ function TilesMatrixContainer() {
     if (rows[cursor.row][cursor.idx].char !== '') return;
     let tmp = _.cloneDeep(rows);
     tmp[cursor.row][cursor.idx].char = char;
-    setRows([...tmp]);
+    setRows(tmp);
     moveIdx(true);
   }, [cursor, rows, moveIdx]);
 
   const removeChar = useCallback(() => {
     let tmp = _.cloneDeep(rows);
 
-    if (rows[cursor.row][cursor.idx].char === '') {
+    if (rows[cursor.row][cursor.idx].char === '' && cursor.idx > 0) {
       moveIdx(false);
       tmp[cursor.row][cursor.idx - 1].char = '';
-      console.log(cursor.idx - 1)
     } else {
       tmp[cursor.row][cursor.idx].char = '';
     }
-    setRows([...tmp]);
+    setRows(tmp);
   }, [cursor, rows, moveIdx]);
 
   const submitRow = useCallback(() => {
     let word = rows[cursor.row].map(x => x.char).join('');
     if (word.length !== 5) return;
+    let tmp = _.cloneDeep(rows);
 
     setLoading(true);
     axios.post('/api/submit', { word })
-      .then((result) => {
+      .then(response => {
         setLoading(false);
-        if (result.data.status === 'succeed') {
-          let tileStates = result.data.tiles;
-          let tmp = _.cloneDeep(rows);
+        if (response.data.status === 'succeed') {
+          let tileStates = response.data.tiles;
           tmp[cursor.row].map((tile, i) => tile.state = tileStates[i]);
-          return tmp;
+          return true;
         } else {
           alert(`'${word}' is not a word`);
           setCursor({...cursor, idx: 4})
         }
-      }).then(tmp => {
-        if (tmp) {
+      }).then(isWord => {
+        if (!isWord) return;
           axios.post('/api/save', { rows: JSON.stringify(tmp), cursor: cursor.row + 1 }).then(() => console.log('saved'))
-          setRows([...tmp]);
-          moveRow();
-        } 
+          setRows(tmp);
+          moveRow(); 
       })
   }, [cursor, rows, moveRow]);
 
@@ -157,7 +155,7 @@ function TilesMatrixContainer() {
 
   return (
     <TilesMatrixPresenter>
-      <div onClick={() => {console.log(initialRows)}}>
+      <div>
       {rows.map((row, i) => 
         <TilesRow 
         key={`row_${i}`} 
