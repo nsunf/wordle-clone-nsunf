@@ -25,7 +25,8 @@ const TileBlock = styled.div<{isFocused: boolean, state: TileState}>`
   ${props => props.isFocused ?
     `
       background: white;
-      transform: scale(1.025);
+      // transform: scale(1.025);
+      animation: cursor 1000ms linear infinite;
     ` : null
   }
 
@@ -49,6 +50,18 @@ const TileBlock = styled.div<{isFocused: boolean, state: TileState}>`
         default :
           return;
       }
+    }
+  }
+
+  @keyframes cursor {
+    0% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.025);
+    }
+    100% {
+      transform: scale(1);
     }
   }
 `;
