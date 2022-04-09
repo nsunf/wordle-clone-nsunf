@@ -10,6 +10,7 @@ const router = express_1.default.Router();
 router.get('/', (req, res) => {
     if (!req.session.word) {
         req.session.word = word_1.default.randomWord();
+        req.session.history = [];
         console.log('New User ---> ' + req.session.word);
     }
     else {

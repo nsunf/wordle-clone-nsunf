@@ -7,9 +7,8 @@ const express_1 = __importDefault(require("express"));
 const word_1 = __importDefault(require("../services/word"));
 const router = express_1.default.Router();
 router.post('/submit', (req, res) => {
-    var _a;
     let word = req.body.word;
-    let answer = (_a = req.session.word) !== null && _a !== void 0 ? _a : 'hello';
+    let answer = req.session.word;
     word_1.default.isItAWord(word)
         .then(isWord => {
         if (isWord) {
@@ -23,6 +22,7 @@ router.post('/submit', (req, res) => {
     });
 });
 router.post('/newGame', (req, res) => {
+    req.session.history.push({ tiles: req.body.data, word: req.session.word, status: req.body.status });
     req.session.word = word_1.default.randomWord();
     req.session.process = null;
     res.send('/api/newGame called');

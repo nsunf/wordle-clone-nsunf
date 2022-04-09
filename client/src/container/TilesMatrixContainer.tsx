@@ -6,7 +6,7 @@ import TilesMatrixPresenter from "../presenters/TilesMatrixPresenter";
 import TilesRow from "../components/TilesRow";
 import SubmitButton from "../styled/SubmitButton";
 
-import { ITile } from "../models/Tile";
+import { ITile, tileToInt } from "../models/Tile";
 import KeyboardContainer from "./KeyboardContainer";
 
 const initialRows: ITile[][] = [
@@ -95,6 +95,11 @@ function TilesMatrixContainer() {
     setWillRestart(false);
   };
 
+  const convertRows = useCallback(() => {
+    return rows.flat().flatMap(tileToInt);
+  }, [rows]);
+
+
   const keyPressEvent = useCallback((e: KeyboardEvent) => {
     if (loading) return;
     let key = e.code;
@@ -128,16 +133,16 @@ function TilesMatrixContainer() {
     let tilesRow = rows[cursor.row]
     if (tilesRow.every(tile => tile.state === 'right')) {
       alert('Right');
-      axios.post('/api/newGame').then(() => setWillRestart(true));
+      axios.post('/api/newGame', { data: convertRows(), status: 'succeed' }).then(() => setWillRestart(true));
     } else if (cursor.row === 5 && tilesRow.every(tile => tile.state !== 'normal')) {
-      axios.post('api/answer').then((response) => {
+      axios.post('api/answer', { data: convertRows(), status: 'failure' }).then((response) => {
         let answer = response.data;
         alert(`the answer is ${answer}`);
       }).then(() => {
         axios.post('/api/newGame').then(() => setWillRestart(true));
       })
     }
-  }, [cursor, rows]);
+  }, [cursor, rows, convertRows]);
 
   useEffect(() => {
     if (!willRestart) return; 

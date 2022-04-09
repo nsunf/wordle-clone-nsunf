@@ -6,7 +6,7 @@ const router = express.Router();
 
 router.post('/submit', (req: Request, res: Response) => {
   let word = req.body.word;
-  let answer = req.session.word ?? 'hello';
+  let answer = req.session.word;
   wordManager.isItAWord(word)
     .then(isWord => {
       if (isWord) {
@@ -19,6 +19,7 @@ router.post('/submit', (req: Request, res: Response) => {
 });
 
 router.post('/newGame', (req: Request, res: Response) => {
+  req.session.history!.push({tiles: req.body.data, word: req.session.word!, status: req.body.status}) 
   req.session.word = wordManager.randomWord();
   req.session.process = null;
   res.send('/api/newGame called');

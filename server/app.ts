@@ -32,7 +32,7 @@ declare module 'express-session' {
   interface SessionData {
     word: string;
     process: { rows: string, cursor: number }|null;
-    history: string;
+    history: { tiles: number[], word: string, status: 'succeed'|'failure'}[];
   }
 }
 

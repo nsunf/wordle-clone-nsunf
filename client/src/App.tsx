@@ -19,11 +19,6 @@ const AppBlock = styled.div`
 `;
 
 function App() {
-  useEffect(() => {
-    axios.get('/').then((response) => {
-      console.log('axios root server')
-    })
-  }, []);
   return (
     <ThemeProvider theme={theme}>
     <AppBlock>
