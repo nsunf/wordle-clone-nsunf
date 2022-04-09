@@ -77,12 +77,17 @@ function TilesMatrixContainer() {
           let tileStates = result.data.tiles;
           let tmp = _.cloneDeep(rows);
           tmp[cursor.row].map((tile, i) => tile.state = tileStates[i]);
-          setRows([...tmp]);
-          moveRow();
+          return tmp;
         } else {
           alert(`'${word}' is not a word`);
           setCursor({...cursor, idx: 4})
         }
+      }).then(tmp => {
+        if (tmp) {
+          axios.post('/api/save', { rows: JSON.stringify(tmp), cursor: cursor.row + 1 }).then(() => console.log('saved'))
+          setRows([...tmp]);
+          moveRow();
+        } 
       })
   }, [cursor, rows, moveRow]);
 
@@ -127,7 +132,6 @@ function TilesMatrixContainer() {
       alert('Right');
       axios.post('/api/newGame').then(() => setWillRestart(true));
     } else if (cursor.row === 5 && tilesRow.every(tile => tile.state !== 'normal')) {
-      console.log('hahaha')
       axios.post('api/answer').then((response) => {
         let answer = response.data;
         alert(`the answer is ${answer}`);
@@ -141,6 +145,15 @@ function TilesMatrixContainer() {
     if (!willRestart) return; 
     reset();
   }, [willRestart]);
+
+  useEffect(() => {
+    axios.post('/api/load')
+      .then(response => {
+        if (!response.data) return;
+        setRows(JSON.parse(response.data.rows));
+        setCursor({row: response.data.cursor, idx: 0})
+      })
+  }, [])
 
   return (
     <TilesMatrixPresenter>

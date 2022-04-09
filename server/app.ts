@@ -31,7 +31,8 @@ app.use(express.static(path.join(__dirname, '..', '..', 'client', 'build')));
 declare module 'express-session' {
   interface SessionData {
     word: string;
-    score: null
+    process: { rows: string, cursor: number }|null;
+    history: string;
   }
 }
 

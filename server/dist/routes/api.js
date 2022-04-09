@@ -24,9 +24,19 @@ router.post('/submit', (req, res) => {
 });
 router.post('/newGame', (req, res) => {
     req.session.word = word_1.default.randomWord();
-    res.end();
+    req.session.process = null;
+    res.send('/api/newGame called');
 });
 router.post('/answer', (req, res) => {
     res.send(req.session.word);
+});
+router.post('/save', (req, res) => {
+    let rows = req.body.rows;
+    let cursor = req.body.cursor;
+    req.session.process = { rows, cursor };
+    res.send('/api/save called');
+});
+router.post('/load', (req, res) => {
+    res.send(req.session.process);
 });
 exports.default = router;

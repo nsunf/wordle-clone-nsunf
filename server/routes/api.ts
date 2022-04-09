@@ -20,11 +20,23 @@ router.post('/submit', (req: Request, res: Response) => {
 
 router.post('/newGame', (req: Request, res: Response) => {
   req.session.word = wordManager.randomWord();
-  res.end();
+  req.session.process = null;
+  res.send('/api/newGame called');
 });
 
 router.post('/answer', (req: Request, res: Response) => {
   res.send(req.session.word);
+});
+
+router.post('/save', (req: Request, res: Response) => {
+  let rows: string = req.body.rows;
+  let cursor: number = req.body.cursor;
+  req.session.process = { rows, cursor };
+  res.send('/api/save called');
+});
+
+router.post('/load', (req: Request, res: Response) => {
+  res.send(req.session.process);
 });
 
 
