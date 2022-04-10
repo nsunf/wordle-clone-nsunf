@@ -132,11 +132,11 @@ function TilesMatrixContainer() {
       alert('Right');
       axios.post('/api/newGame', { data: convertRows(), status: 'succeed' }).then(() => setWillRestart(true));
     } else if (cursor.row === 5 && tilesRow.every(tile => tile.state !== 'normal')) {
-      axios.post('api/answer', { data: convertRows(), status: 'failure' }).then((response) => {
+      axios.post('/api/answer').then((response) => {
         let answer = response.data;
         alert(`the answer is ${answer}`);
       }).then(() => {
-        axios.post('/api/newGame').then(() => setWillRestart(true));
+        axios.post('/api/newGame', { data: convertRows(), status: 'failure' }).then(() => setWillRestart(true));
       })
     }
   }, [cursor, rows, convertRows]);
