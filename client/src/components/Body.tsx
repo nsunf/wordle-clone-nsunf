@@ -1,6 +1,8 @@
 import styled from "styled-components";
 
 import TilesMatrixContainer from "../container/TilesMatrixContainer";
+import LeaderboardContainer from "../container/LeaderboardContainer";
+import { Route, Routes } from "react-router-dom";
 
 const BodyBlock = styled.div`
 `;
@@ -8,7 +10,10 @@ const BodyBlock = styled.div`
 function Body() {
   return (
     <BodyBlock>
-      <TilesMatrixContainer/>
+      <Routes>
+        <Route path="/" element={<TilesMatrixContainer/>}/>
+        <Route path="/leaderboard" element={<LeaderboardContainer/>}/>
+      </Routes>
     </BodyBlock>
   );
 }

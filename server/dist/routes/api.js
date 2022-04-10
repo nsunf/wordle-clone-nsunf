@@ -22,6 +22,10 @@ router.post('/submit', (req, res) => {
     });
 });
 router.post('/newGame', (req, res) => {
+    if (req.session.history === undefined)
+        res.send('history undefined');
+    if (req.session.word === undefined)
+        res.send('word undefined');
     req.session.history.push({ tiles: req.body.data, word: req.session.word, status: req.body.status });
     req.session.word = word_1.default.randomWord();
     req.session.process = null;
@@ -38,5 +42,8 @@ router.post('/save', (req, res) => {
 });
 router.post('/load', (req, res) => {
     res.send(req.session.process);
+});
+router.post('/getHistory', (req, res) => {
+    res.send(req.session.history);
 });
 exports.default = router;
