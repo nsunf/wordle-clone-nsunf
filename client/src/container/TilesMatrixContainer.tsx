@@ -3,11 +3,8 @@ import axios from "axios";
 import _ from "lodash";
 
 import TilesMatrixPresenter from "../presenters/TilesMatrixPresenter";
-import TilesRow from "../components/TilesRow";
-import SubmitButton from "../styled/SubmitButton";
 
 import { ITile, tileToInt } from "../models/Tile";
-import KeyboardContainer from "./KeyboardContainer";
 
 const initialRows: ITile[][] = [
   [{ char: '', state: 'normal' }, { char: '', state: 'normal' }, { char: '', state: 'normal' }, { char: '', state: 'normal' }, { char: '', state: 'normal' }],
@@ -159,19 +156,13 @@ function TilesMatrixContainer() {
   }, [])
 
   return (
-    <TilesMatrixPresenter>
-      <div>
-      {rows.map((row, i) => 
-        <TilesRow 
-        key={`row_${i}`} 
-        row={row}
-        cursor={cursor.row === i ? cursor.idx : null}
-        />)
-      }
-      </div>
-      <SubmitButton onClick={submitRow}>Submit</SubmitButton>
-      <KeyboardContainer rows={rows} addChar={addChar} removeChar={removeChar}/>
-    </TilesMatrixPresenter>
+    <TilesMatrixPresenter
+      rows={rows}
+      cursor={cursor}
+      submitRow={submitRow}
+      addChar={addChar}
+      removeChar={removeChar}
+    />
   );
 }
 

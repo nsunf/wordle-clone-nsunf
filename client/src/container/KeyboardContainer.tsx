@@ -1,8 +1,7 @@
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState} from "react";
 import _ from "lodash";
 
 import KeyboardPresenter from "../presenters/KeyboardPresenter";
-import { KeysRow, Key } from "../styled/Key";
 import { ITile } from "../models/Tile";
 
 interface KeyboardContainerProps {
@@ -49,16 +48,11 @@ function KeyboardContainer({ rows, addChar, removeChar }: KeyboardContainerProps
   }, [rows])
 
   return (
-    <KeyboardPresenter>
-      {keys.map((row, i) => {
-        return (
-          <KeysRow key={`keysRow_${i}`}>
-            {row.map(key => <Key key={`key_${key.char}`} keyValue={key.char} isBackspace={false} state={key.state} onClick={() => addChar(key.char)}></Key>)}
-            {i === 2 ? <Key keyValue={'←'} isBackspace={true} state={Key.state} onClick={() => removeChar()}/> : null}
-          </KeysRow>
-        );
-      })}
-    </KeyboardPresenter>
+    <KeyboardPresenter
+      keys={keys}
+      addChar={addChar}
+      removeChar={removeChar}
+    />
   );
 }
 
