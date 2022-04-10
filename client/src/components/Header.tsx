@@ -43,7 +43,7 @@ const Setting = styled(FiSettings)<{$isSelected: boolean}>`
 function Header() {
   return (
     <HeaderBlock>
-      <Logo>WORDLE</Logo>
+      <Link to="/"><Logo>WORDLE</Logo></Link>
       <Buttons>
       <Link to="/leaderBoard"><LeaderBoard $isSelected={false}/></Link>
       <Link to ="/setting"><Setting $isSelected={false}/></Link>
