@@ -50,6 +50,13 @@ router.post('/getHistory', (req: Request, res: Response) => {
   res.send(req.session.history);
 });
 
+router.post('/destroySession', (req: Request, res: Response) => {
+  req.session.destroy(err => {
+    if (err) throw new Error('Error destroySession : ' + err);
+    res.end('ho');
+  })
+})
+
 
 export default router;
 

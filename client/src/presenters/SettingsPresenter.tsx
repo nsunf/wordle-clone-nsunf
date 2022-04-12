@@ -136,7 +136,7 @@ const ResetButton = styled.button`
   }
 `;
 
-function SettingsPresenter() {
+function SettingsPresenter({ onClickButton }: { onClickButton: () => void }) {
   return (
     <Presenter>
       <Wrap>
@@ -146,7 +146,7 @@ function SettingsPresenter() {
           <Tile key={`nsunf_${char}_${i}`} idx={i} char={char}/>
         )}
         </NsunfBlock>
-        <ResetButton>Reset Leaderboard</ResetButton>
+        <ResetButton onClick={onClickButton}>Reset Leaderboard</ResetButton>
       </Wrap>
     </Presenter>
   );
