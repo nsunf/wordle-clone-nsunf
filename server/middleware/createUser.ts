@@ -5,6 +5,7 @@ export default function createUser(req: express.Request, res: express.Response, 
   if (!req.session.word) {
     req.session.word = wordManager.randomWord();
     req.session.history = [];
+    req.session.state = 'new'; 
     console.log('New User ---> ' + req.session.word);
   } else {
     console.log('Old User ---> ' + req.session.word);

@@ -4,7 +4,10 @@ import _ from "lodash";
 
 import TilesMatrixPresenter from "../presenters/TilesMatrixPresenter";
 
-import { ITile, tileToInt } from "../models/Tile";
+import { TileState, ITile, tileToInt } from "../models/Tile";
+
+type GameState = 'new'|'ongoing'|'end';
+type Cursor = { row: number, col: number };
 
 const initialRows: ITile[][] = [
   [{ char: '', state: 'normal' }, { char: '', state: 'normal' }, { char: '', state: 'normal' }, { char: '', state: 'normal' }, { char: '', state: 'normal' }],
@@ -16,98 +19,159 @@ const initialRows: ITile[][] = [
 ];
 
 function TilesMatrixContainer() {
-  const [cursor, setCursor] = useState<{row: number, idx: number}>({row: 0, idx: 0});
+  const [state, setState] = useState<GameState>('new');
+  const [cursor, setCursor] = useState<Cursor>({row: 0, col: 0});
   const [rows, setRows] = useState<ITile[][]>(initialRows);
   const [loading, setLoading] = useState(false);
-  const [willRestart, setWillRestart] = useState(false);
   
-  const moveIdx = useCallback((forwards: boolean) => {
-    let nxtIdx = cursor.idx;
+  const moveCol = useCallback((forwards: boolean) => {
+    let nxtIdx = cursor.col;
     if (forwards && nxtIdx !== 4) {
       nxtIdx++;
     } else if (!forwards && nxtIdx !== 0) {
       nxtIdx--;
     }
 
-    setCursor({...cursor, idx: nxtIdx});
+    setCursor({...cursor, col: nxtIdx});
   }, [cursor]);
 
   const moveRow = useCallback(() => {
     if (
       cursor.row === 5 ||
-      cursor.idx !== 4 ||
-      rows[cursor.row][cursor.idx].char === ''
+      cursor.col !== 4 ||
+      rows[cursor.row][cursor.col].char === ''
       ) return;
-    setCursor({row: cursor.row + 1, idx: 0});
+    setCursor({row: cursor.row + 1, col: 0});
   }, [cursor, rows]);
   
   const addChar = useCallback((char: string) => {
-    if (rows[cursor.row][cursor.idx].char !== '') return;
+    if (rows[cursor.row][cursor.col].char !== '') return;
     let tmp = _.cloneDeep(rows);
-    tmp[cursor.row][cursor.idx].char = char;
+    tmp[cursor.row][cursor.col].char = char;
     setRows(tmp);
-    moveIdx(true);
-  }, [cursor, rows, moveIdx]);
+    moveCol(true);
+  }, [cursor, rows, moveCol]);
 
   const removeChar = useCallback(() => {
     let tmp = _.cloneDeep(rows);
 
-    if (rows[cursor.row][cursor.idx].char === '' && cursor.idx > 0) {
-      moveIdx(false);
-      tmp[cursor.row][cursor.idx - 1].char = '';
+    if (rows[cursor.row][cursor.col].char === '' && cursor.col > 0) {
+      moveCol(false);
+      tmp[cursor.row][cursor.col - 1].char = '';
     } else {
-      tmp[cursor.row][cursor.idx].char = '';
+      tmp[cursor.row][cursor.col].char = '';
     }
     setRows(tmp);
-  }, [cursor, rows, moveIdx]);
+  }, [cursor, rows, moveCol]);
 
-  const submitRow = useCallback(() => {
-    let word = rows[cursor.row].map(x => x.char).join('');
-    if (word.length !== 5) return;
-    let tmp = _.cloneDeep(rows);
+  const checkWord = useCallback(async (word: string): Promise<{status: 'succeed'|'failure', tiles: TileState[]}> => {
+    try {
+      let response = await axios.post('/api/submit', { word })
+      return response.data;
+    } catch (err) {
+      throw new Error('Error checkWord : ' + err);
+    }
+  }, []);
 
+  const saveProcess = useCallback((_rows: ITile[][], _cursor: Cursor, _state: GameState) => {
+    return axios.post('/api/saveProcess', { rows: _rows, cursor: _cursor, state: _state})
+  }, [])
+
+  const saveLeaderboard = useCallback((_rows: ITile[][], status: 'succeed'|'failure') => {
+    let convertedTiles = _rows.flat().flatMap(tileToInt)
+    return axios.post('/api/addHistory', { data: convertedTiles, status})
+  }, []);
+
+
+
+  const onSubmit = useCallback(async() => {
+    if (cursor.col !== 4 || rows[cursor.row][cursor.col].char === '') return;
     setLoading(true);
-    axios.post('/api/submit', { word })
-      .then(response => {
-        setLoading(false);
-        if (response.data.status === 'succeed') {
-          let tileStates = response.data.tiles;
-          tmp[cursor.row].map((tile, i) => tile.state = tileStates[i]);
-          return true;
+
+    let tmpRows = _.cloneDeep(rows);
+    let tmpCursor = _.cloneDeep(cursor);
+    let tmpRow = tmpRows[tmpCursor.row];
+
+    let word = tmpRow.map(tile => tile.char).join('');
+
+    let wordCheck = await checkWord(word);
+    setLoading(false);
+    if (wordCheck.status === 'succeed') {
+      setState('ongoing');
+      wordCheck.tiles.forEach((tileState, i) => tmpRow[i].state = tileState);
+      setRows(tmpRows);
+
+      if (tmpRow.every(tile => tile.state === 'right')) {
+        alert('right');
+        setState('end');
+        await saveProcess(tmpRows, tmpCursor, 'end');
+        await saveLeaderboard(tmpRows, 'succeed');
+      } else {
+        if (tmpCursor.row < 5) {
+          await saveProcess(tmpRows, {row: tmpCursor.row + 1, col: 0}, 'ongoing');
+          moveRow();
         } else {
-          alert(`'${word}' is not a word`);
-          setCursor({...cursor, idx: 4})
+          alert('Beep');
+          setState('end');
+          await saveProcess(tmpRows, tmpCursor, 'end');
+          await saveLeaderboard(tmpRows, 'failure');
         }
-      }).then(isWord => {
-        if (!isWord) return;
-          axios.post('/api/save', { rows: JSON.stringify(tmp), cursor: cursor.row + 1 }).then(() => console.log('saved'))
-          setRows(tmp);
-          moveRow(); 
-      })
-  }, [cursor, rows, moveRow]);
+      }
+    } else {
+      alert(`${word} is not a word`);
+    }
 
-  const reset = () => {
-    setCursor({ row: 0, idx: 0 });
+    // is it a word?
+      // yes
+        // change game state to ongoing
+        // mark each tile
+        // save process
+        // is it an answer?
+          // yes
+            // notice user it is right
+            // set game state to end [setState]
+            // set button to New Game
+            // save process
+            // save result to leaderboard(history)
+          // no
+            // does user have a chance? 
+              // yes
+                // move cursor [setCursor]
+              // no
+                // show answer to user
+                // set game state to end [setState]
+                // set button to New Game
+                // save process
+                // save result to leaderboard(history)
+      // no
+        // alert to user
+  }, [rows, cursor, checkWord, saveProcess, saveLeaderboard, moveRow]);
+
+  const onNewGame = useCallback(async() => {
+    await axios.post('/api/newGame');
+    await saveProcess(initialRows, { row: 0, col: 0 }, 'new')
+    setState('new');
     setRows(initialRows);
-    setWillRestart(false);
-  };
-
-  const convertRows = useCallback(() => {
-    return rows.flat().flatMap(tileToInt);
-  }, [rows]);
+    setCursor({ row: 0, col: 0 });
+    // set state to new
+    // reset rows
+    // reset cursor
+    // save process
+  }, [saveProcess])
+  
 
 
   const keyPressEvent = useCallback((e: KeyboardEvent) => {
-    if (loading) return;
+    if (loading || state === 'end') return;
     let key = e.code;
     if (key.slice(0, 3) === 'Key') {
       addChar(key.slice(-1));
     } else if (key === 'Enter') {
-      submitRow();
+      onSubmit();
     } else if (key === 'Backspace') {
       removeChar();
     }
-  }, [ addChar, removeChar, submitRow, loading])
+  }, [ addChar, removeChar, onSubmit, loading, state])
 
   useEffect(() => {
     window.addEventListener('keydown', keyPressEvent);
@@ -119,47 +183,33 @@ function TilesMatrixContainer() {
   useEffect(() => {
     if (!loading) return; 
     const timer = setTimeout(() => {
-      let nxtIdx = cursor.idx + 1 > 4 ? 0 : cursor.idx + 1;
-      setCursor({...cursor, idx: nxtIdx})
+      let nxtIdx = cursor.col + 1 > 4 ? 0 : cursor.col + 1;
+      setCursor({...cursor, col: nxtIdx})
     }, 200);
 
     return () => clearTimeout(timer);
   }, [loading, cursor])
 
-  useEffect(() => {
-    let tilesRow = rows[cursor.row]
-    if (tilesRow.every(tile => tile.state === 'right')) {
-      alert('Right');
-      axios.post('/api/newGame', { data: convertRows(), status: 'succeed' }).then(() => setWillRestart(true));
-    } else if (cursor.row === 5 && tilesRow.every(tile => tile.state !== 'normal')) {
-      axios.post('/api/answer').then((response) => {
-        let answer = response.data;
-        alert(`the answer is ${answer}`);
-      }).then(() => {
-        axios.post('/api/newGame', { data: convertRows(), status: 'failure' }).then(() => setWillRestart(true));
-      })
-    }
-  }, [cursor, rows, convertRows]);
-
-  useEffect(() => {
-    if (!willRestart) return; 
-    reset();
-  }, [willRestart]);
 
   useEffect(() => {
     axios.post('/api/load')
       .then(response => {
-        if (!response.data) return;
-        setRows(JSON.parse(response.data.rows));
-        setCursor({row: response.data.cursor, idx: 0})
+        let { process, state } = response.data;
+        if (!process) return;
+        let rows: ITile[][] = process.rows;
+        setState(state);
+        setRows(rows);
+        setCursor(process.cursor)
       })
   }, [])
 
   return (
     <TilesMatrixPresenter
+      state={state}
       rows={rows}
       cursor={cursor}
-      submitRow={submitRow}
+      onSubmit={onSubmit}
+      onNewGame={onNewGame}
       addChar={addChar}
       removeChar={removeChar}
     />

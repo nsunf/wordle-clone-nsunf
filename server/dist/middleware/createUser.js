@@ -8,6 +8,7 @@ function createUser(req, res, nxt) {
     if (!req.session.word) {
         req.session.word = word_1.default.randomWord();
         req.session.history = [];
+        req.session.state = 'new';
         console.log('New User ---> ' + req.session.word);
     }
     else {

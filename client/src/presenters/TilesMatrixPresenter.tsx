@@ -21,14 +21,16 @@ const MatrixBlock = styled.div`
 `;
 
 interface PresenterProps {
+  state: 'new'|'ongoing'|'end';
   rows: ITile[][];
-  cursor: { row: number, idx: number };
-  submitRow: () => void;
+  cursor: { row: number, col: number };
+  onSubmit: () => void;
+  onNewGame: () => void;
   addChar: (char: string) => void;
   removeChar: () => void;
 }
 
-function TilesMatrixPresenter({ rows, cursor, submitRow, addChar, removeChar } : PresenterProps) {
+function TilesMatrixPresenter({ state, rows, cursor, onSubmit, onNewGame, addChar, removeChar } : PresenterProps) {
   return (
     <Presenter>
       <MatrixBlock>
@@ -36,11 +38,14 @@ function TilesMatrixPresenter({ rows, cursor, submitRow, addChar, removeChar } :
         <TilesRow 
         key={`row_${i}`} 
         row={row}
-        cursor={cursor.row === i ? cursor.idx : null}
+        cursor={cursor.row === i ? cursor.col : null}
         />)
       }
       </MatrixBlock>
-      <SubmitButton onClick={submitRow}>Submit</SubmitButton>
+      {state === 'end' ?
+        <SubmitButton onClick={onNewGame}>New Game</SubmitButton> :
+        <SubmitButton onClick={onSubmit}>Submit</SubmitButton>
+      }
       <KeyboardContainer rows={rows} addChar={addChar} removeChar={removeChar}/>
     </Presenter>
   );
