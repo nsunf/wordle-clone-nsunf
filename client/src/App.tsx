@@ -24,14 +24,9 @@ function App() {
   const [headerHeight, setHeaderHeight] = useState(0);
   const headerRef = useRef<HTMLDivElement>(null);
 
+  // client test
   // useEffect(() => {
   //   axios.get('/').then(() => console.log('axios server'))
-  //   let resizeEvent = () => {
-  //     setHeaderHeight(headerRef.current?.clientHeight ?? 0);
-  //   }
-
-  //   window.addEventListener('resize', resizeEvent);
-  //   return () => window.removeEventListener('resize', resizeEvent);
   // }, []);
 
   useEffect(() => {

@@ -67,6 +67,7 @@ export const Key = styled.div<IKey>`
 
   @media (max-width: 768px) {
     aspect-ratio: 4/5;
+    font-size: 16px;
   }
 `;
 

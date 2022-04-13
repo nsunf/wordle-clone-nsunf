@@ -29,6 +29,14 @@ const Presenter = styled.div`
 
   background: #e4e4e4;
   border-radius: 4px 4px 0 0;
+
+  @media (max-width: 1024px) {
+    width: 80vw;
+  }
+  @media (max-width: 768px) {
+    width: 95vw;
+    height: 88vh;
+  }
 `;
 
 const CloseBtn = styled(AiOutlineClose)`

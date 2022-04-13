@@ -66,6 +66,9 @@ const TileBlock = styled.div<{isFocused: boolean, state: TileState}>`
   @media (max-width: 1200px) {
     border-radius: 8px;
   }
+  @media (max-width: 1024px) {
+    font-size: 32px;
+  }
 `;
 
 

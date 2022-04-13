@@ -26,6 +26,10 @@ const Wrap = styled.div`
   gap: 40px;
 
   transform: translate(-50%, -50%);
+
+  @media (max-width: 768px) {
+    width: 90%;
+  }
 `;
 
 const Title = styled.h2`

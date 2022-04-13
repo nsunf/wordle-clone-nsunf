@@ -30,7 +30,7 @@ const HistoryTileBlock = styled.div<{word: string}>`
 
 const Tile = styled.div<{type: number}>`
   width: 100%;
-  aspecti-ratio: 1/1;
+  aspect-ratio: 1/1;
   ${props => {
     let { main_color, sub_color, yellow} = props.theme;
     switch (props.type) {
