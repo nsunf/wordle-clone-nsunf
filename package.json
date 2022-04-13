@@ -10,7 +10,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev-server-start": "cd server && npm run dev-start",
     "dev-client-start": "cd client && npm run start",
-    "heroku-prebuild": "cd client && npm run build && cd ../",
+    "heroku-prebuild": "cd server && npm ci && cd ../client && npm ci && npm run build",
     "start": "cd server && pm2 start dist/app.js"
   },
   "keywords": [],
