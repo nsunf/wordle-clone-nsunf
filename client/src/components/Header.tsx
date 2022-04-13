@@ -1,3 +1,4 @@
+import React from "react";
 import styled from "styled-components";
 import { FiSettings } from "react-icons/fi";
 import { MdLeaderboard } from "react-icons/md";
@@ -12,12 +13,23 @@ const HeaderBlock = styled.div`
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
+
+  @media (max-width: 768px) {
+    height: 64px;
+  }
+
+  @media (max-width: 428px) {
+    height: 44px;
+  }
 `;
 
 const Logo = styled.h1`
   color: white;
   padding: 8px 0;
   margin: 0 16px;
+  @media (max-width: 428px) {
+    font-size: 20px;
+  }
 `;
 
 const Buttons = styled.div`
@@ -29,6 +41,10 @@ const iconStyles = `
   margin: 16px;
   
   cursor: pointer;
+  @media (max-width: 428px) {
+    font-size: 20px;
+    margin: 10px;
+  }
 `;
 const LeaderBoard = styled(MdLeaderboard)<{$isSelected: boolean}>`
   color: ${props => props.$isSelected ? props.theme.black : 'white'};
@@ -40,9 +56,9 @@ const Setting = styled(FiSettings)<{$isSelected: boolean}>`
   ${iconStyles}
 `;
 
-function Header() {
+function Header({ headerRef }: { headerRef: React.RefObject<HTMLDivElement> }) {
   return (
-    <HeaderBlock>
+    <HeaderBlock ref={headerRef}>
       <Link to="/"><Logo>WORDLE</Logo></Link>
       <Buttons>
       <Link to="/leaderBoard"><LeaderBoard $isSelected={false}/></Link>

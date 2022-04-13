@@ -4,10 +4,16 @@ import Tile from "./Tile";
 import { ITile } from "../models/Tile";
 
 const TilesRowBlock = styled.div`
+  height: ${100/6}%;
   display: flex;
   flex-direction: row;
   justify-content: center;
   align-items: center;
+  gap: 4px;
+
+  @media (max-width: 1200px) {
+    gap: 2px;
+  }
 `;
 
 interface TilesRowProps {

@@ -9,15 +9,51 @@ import { ITile } from "../models/Tile";
 const Presenter = styled.div`
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: 64px;
+  justify-content: space-evenly;
+  align-items: stretch;
+  gap: 32px;
   
-  margin: 80px 0;
+  height: 100%;
+  padding: 32px 0;
+  box-sizing: border-box;
+
+  @media (max-width: 1200px) {
+    gap: 24px;
+  }
+  @media (max-width: 768px) {
+    gap: 16px;
+  }
+`;
+
+const Section = styled.div`
+  height: 75%;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 32px;
+
+  @media (max-width: 1200px) {
+    gap: 24px;
+  }
+  @media (max-width: 768px) {
+    gap: 16px;
+  }
+
 `;
 
 const MatrixBlock = styled.div`
+  flex-grow: 1;
   display: flex;
   flex-direction: column;
+  gap: 4px;
+
+  width: 100%;
+  
+  @media (max-width: 1200px) {
+    gap: 2px;
+  }
 `;
 
 interface PresenterProps {
@@ -33,6 +69,7 @@ interface PresenterProps {
 function TilesMatrixPresenter({ state, rows, cursor, onSubmit, onNewGame, addChar, removeChar } : PresenterProps) {
   return (
     <Presenter>
+      <Section>
       <MatrixBlock>
       {rows.map((row, i) => 
         <TilesRow 
@@ -46,6 +83,7 @@ function TilesMatrixPresenter({ state, rows, cursor, onSubmit, onNewGame, addCha
         <SubmitButton onClick={onNewGame}>New Game</SubmitButton> :
         <SubmitButton onClick={onSubmit}>Submit</SubmitButton>
       }
+      </Section>
       <KeyboardContainer rows={rows} addChar={addChar} removeChar={removeChar}/>
     </Presenter>
   );

@@ -5,6 +5,15 @@ import { KeysRow, Key } from "../styled/Key";
 import { ITile } from "../models/Tile";
 
 const Presenter = styled.div`
+  flex-shrink: 0;
+  flex-grow: 0;
+  gap: 2px;
+
+  height: 25%;
+  display: flex;
+  flex-direction: column;
+  jusify-content: center;
+  align-items: center;
 `;
 
 interface PresenterProps {

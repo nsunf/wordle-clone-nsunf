@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import styled, { ThemeProvider } from 'styled-components';
 
 import Header from './components/Header';
@@ -16,14 +16,36 @@ const theme = {
 }
 
 const AppBlock = styled.div`
+  box-sizing: border-box;
+  height: 100%;
 `;
 
 function App() {
+  const [headerHeight, setHeaderHeight] = useState(0);
+  const headerRef = useRef<HTMLDivElement>(null);
+
+  // useEffect(() => {
+  //   axios.get('/').then(() => console.log('axios server'))
+  //   let resizeEvent = () => {
+  //     setHeaderHeight(headerRef.current?.clientHeight ?? 0);
+  //   }
+
+  //   window.addEventListener('resize', resizeEvent);
+  //   return () => window.removeEventListener('resize', resizeEvent);
+  // }, []);
+
+  useEffect(() => {
+    let height = headerRef.current?.clientHeight;
+    if (height === undefined) return;
+    setHeaderHeight(height)
+  }, [headerRef]);
+
+
   return (
     <ThemeProvider theme={theme}>
     <AppBlock>
-      <Header/>
-      <Body/>
+      <Header headerRef={headerRef}/>
+      <Body headerHeight={headerHeight}/>
     </AppBlock>
     </ThemeProvider>
   );

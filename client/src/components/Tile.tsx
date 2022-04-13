@@ -3,13 +3,11 @@ import styled, { css } from "styled-components";
 import { ITile, TileState } from "../models/Tile";
 
 const TileBlock = styled.div<{isFocused: boolean, state: TileState}>`
-  width: 100px;
-  height: 100px;
+  height: 100%;
+  aspect-ratio: 1/1;
 
   border: 2px solid black;
   border-radius: 10px;
-
-  margin: 4px;
 
   box-sizing: border-box;
 
@@ -63,6 +61,10 @@ const TileBlock = styled.div<{isFocused: boolean, state: TileState}>`
     100% {
       transform: scale(1);
     }
+  }
+
+  @media (max-width: 1200px) {
+    border-radius: 8px;
   }
 `;
 

@@ -9,10 +9,11 @@ interface IKey {
 
 export const Key = styled.div<IKey>`
   position: relative; 
-  width: 72px;
-  height: 80px;
+  height: 100%;
+  aspect-ratio: 1/1;
   border: 1px solid black;
   border-radius: 4px;
+  box-sizing: border-box;
 
   display: flex;
   justify-content: center;
@@ -20,7 +21,7 @@ export const Key = styled.div<IKey>`
 
   background: white;
 
-  font-weigth: bold;
+  font-weight: bold;
   font-size: 32px;
 
   cursor: pointer;
@@ -36,7 +37,7 @@ export const Key = styled.div<IKey>`
   }
 
   ${props => props.isBackspace ? `
-    width: 112px;
+    // aspect-ratio: 2/3;
   ` : null}
 
   ${props => {
@@ -59,15 +60,30 @@ export const Key = styled.div<IKey>`
         return;
     }
   }}
+
+  @media (max-width: 1200px) {
+    font-size: 24px;
+  }
+
+  @media (max-width: 768px) {
+    aspect-ratio: 4/5;
+  }
 `;
 
 
 export const KeysRow = styled.div`
+  flex-grow: 1;
   display: flex;
   flex-direction: row;
   justify-content: center;
   align-items: center;
   gap: 4px;
 
-  margin: 2px 0;
+
+  @media (max-width: 1024px) {
+    gap: 2px;
+  }
+
+  @media (max-width: 768px) {
+  }
 `;
