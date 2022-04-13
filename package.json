@@ -3,13 +3,20 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "engines": {
+    "node": "16.*"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev-server-start": "cd server && npm run dev-start",
     "dev-client-start": "cd client && npm run start",
-    "start": "cd client && npm run build && cd ../server && npm run start"
+    "heroku-prebuild": "cd client && npm run build && cd ../",
+    "start": "cd server && pm2 start dist/app.js"
   },
   "keywords": [],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "pm2": "^5.2.0"
+  }
 }
