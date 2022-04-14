@@ -11,6 +11,8 @@
     "@types/node": "^16.11.26",
     "@types/react": "^17.0.43",
     "@types/react-dom": "^17.0.14",
+    "@types/lodash-es": "^4.17.6",
+    "@types/styled-components": "^5.1.25",
     "axios": "^0.26.1",
     "lodash-es": "^4.17.21",
     "polished": "^4.2.2",
@@ -46,9 +48,5 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  },
-  "devDependencies": {
-    "@types/lodash-es": "^4.17.6",
-    "@types/styled-components": "^5.1.25"
   }
 }
