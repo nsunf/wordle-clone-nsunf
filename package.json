@@ -11,7 +11,7 @@
     "dev-server-start": "cd server && npm run dev-start",
     "dev-client-start": "cd client && npm run start",
     "heroku-prebuild": "cd server && npm ci && cd ../client && npm ci && npm run build",
-    "start": "cd server && pm2 start dist/app.js"
+    "start": "cd server && node dist/app.js"
   },
   "keywords": [],
   "author": "",
