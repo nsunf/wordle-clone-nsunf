@@ -119,6 +119,7 @@ function TilesMatrixContainer() {
       }
     } else {
       alert(`${word} is not a word`);
+      setCursor({ ...cursor, col: 4 });
     }
 
     // is it a word?
